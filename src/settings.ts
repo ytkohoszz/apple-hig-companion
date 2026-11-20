@@ -1,38 +1,66 @@
-import { App, PluginSettingTab, Setting } from 'obsidian';
-import MyPlugin from './main';
+import { App, PluginSettingTab, Setting } from "obsidian";
+import type AppleHigCompanionPlugin from "./main";
 
-export interface MyPluginSettings {
-	mySetting: string;
+export interface AppleHigCompanionSettings {
+  enableFloatingToolbar: boolean;
+  enableCollapsibleTitle: boolean;
+  enableHaptics: boolean;
 }
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default',
+export const DEFAULT_SETTINGS: AppleHigCompanionSettings = {
+  enableFloatingToolbar: true,
+  enableCollapsibleTitle: true,
+  enableHaptics: true
 };
 
-export class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+export class AppleHigCompanionSettingTab extends PluginSettingTab {
+  private readonly plugin: AppleHigCompanionPlugin;
 
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
+  constructor(app: App, plugin: AppleHigCompanionPlugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
 
-	display(): void {
-		const { containerEl } = this;
+  display(): void {
+    const { containerEl } = this;
+    containerEl.empty();
 
-		containerEl.empty();
+    new Setting(containerEl)
+      .setName("Плавающая панель выделения")
+      .setDesc("Островная панель форматирования над выделенным текстом в редакторе")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.enableFloatingToolbar)
+          .onChange(async (value) => {
+            this.plugin.settings.enableFloatingToolbar = value;
+            await this.plugin.saveSettings();
+            this.plugin.syncModules();
+          })
+      );
 
-		new Setting(containerEl)
-			.setName('Settings #1')
-			.setDesc("It's a secret")
-			.addText((text) =>
-				text
-					.setPlaceholder('Enter your secret')
-					.setValue(this.plugin.settings.mySetting)
-					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
-						await this.plugin.saveSettings();
-					}),
-			);
-	}
+    new Setting(containerEl)
+      .setName("Динамический заголовок при прокрутке")
+      .setDesc("Плавно отображает заголовок заметки в верхней шапке при скролле вниз")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.enableCollapsibleTitle)
+          .onChange(async (value) => {
+            this.plugin.settings.enableCollapsibleTitle = value;
+            await this.plugin.saveSettings();
+            this.plugin.syncModules();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Тактильный отклик (Haptics)")
+      .setDesc("Лёгкая вибрация на iPad/iPhone при переключении задач и нажатии кнопок панели")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.enableHaptics)
+          .onChange(async (value) => {
+            this.plugin.settings.enableHaptics = value;
+            await this.plugin.saveSettings();
+          })
+      );
+  }
 }

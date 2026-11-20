@@ -1,8 +1,132 @@
-/*
+/* ==========================================================================
+   APPLE HIG COMPANION — FLOATING SELECTION TOOLBAR (ISLAND UI)
+   ========================================================================== */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.hig-floating-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--layer-popover, 60);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--radius-m, 12px);
+  background-color: var(--hig-surface-popover, var(--background-secondary));
+  backdrop-filter: var(--hig-blur-popover, blur(24px) saturate(180%));
+  -webkit-backdrop-filter: var(--hig-blur-popover, blur(24px) saturate(180%));
+  border: 0.5px solid var(--background-modifier-border);
+  box-shadow: var(--hig-shadow-popover, var(--shadow-l));
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(var(--hig-ft-x, 0px), var(--hig-ft-y, 0px), 0) scale(0.94);
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+  transition:
+    opacity var(--hig-duration-fast, 0.15s) var(--hig-ease, cubic-bezier(0.25, 1, 0.5, 1)),
+    transform var(--hig-duration-spring, 0.36s) var(--hig-spring, cubic-bezier(0.25, 1, 0.5, 1));
+}
 
-If your plugin does not need CSS, delete this file.
+.hig-floating-toolbar.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(var(--hig-ft-x, 0px), var(--hig-ft-y, 0px), 0) scale(1);
+}
 
-*/
+.hig-floating-toolbar.is-flipped {
+  transform-origin: center top;
+}
+
+.hig-floating-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: var(--radius-s, 8px);
+  background: transparent;
+  color: var(--icon-color, var(--text-muted));
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background-color var(--hig-duration-fast, 0.15s) var(--hig-ease, cubic-bezier(0.25, 1, 0.5, 1)),
+    color var(--hig-duration-fast, 0.15s) var(--hig-ease, cubic-bezier(0.25, 1, 0.5, 1)),
+    transform 0.1s ease;
+}
+
+@media (hover: hover) {
+  .hig-floating-toolbar-btn:hover {
+    background-color: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
+}
+
+.hig-floating-toolbar-btn:active {
+  background-color: var(--background-modifier-active-hover);
+  color: var(--hig-accent, var(--interactive-accent));
+  transform: scale(0.92);
+}
+
+.hig-floating-toolbar-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2;
+}
+
+.hig-floating-toolbar-divider {
+  width: 1px;
+  height: 16px;
+  margin: 0 3px;
+  background-color: var(--divider-color, var(--background-modifier-border));
+}
+
+/* iPadOS / Touch: увеличенные зоны нажатия без hover-артефактов */
+.is-mobile .hig-floating-toolbar,
+.is-tablet .hig-floating-toolbar {
+  padding: 4px 6px;
+  gap: 4px;
+}
+
+.is-mobile .hig-floating-toolbar-btn,
+.is-tablet .hig-floating-toolbar-btn {
+  width: 40px;
+  height: 40px;
+}
+
+.is-mobile .hig-floating-toolbar-btn svg,
+.is-tablet .hig-floating-toolbar-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+@media (pointer: coarse) {
+  .hig-floating-toolbar-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+/* ==========================================================================
+   APPLE HIG COMPANION — COLLAPSIBLE LARGE TITLE (IOS / APPLE NOTES STYLE)
+   ========================================================================== */
+
+.hig-collapsible-title-enabled .view-header-title {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition:
+    opacity var(--hig-duration-normal, 0.22s) var(--hig-ease, cubic-bezier(0.25, 1, 0.5, 1)),
+    transform var(--hig-duration-normal, 0.22s) var(--hig-ease, cubic-bezier(0.25, 1, 0.5, 1));
+}
+
+.hig-collapsible-title-enabled.is-title-collapsed .view-header-title,
+.hig-collapsible-title-enabled .view-header:hover .view-header-title,
+.hig-collapsible-title-enabled .view-header:focus-within .view-header-title {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
